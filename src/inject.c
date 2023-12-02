@@ -347,7 +347,7 @@ addr_t call_process_mmap(pid_t pid, void *start, size_t length, int prot, int fl
     return regs.regs[0];
 }
 
-void call_process_munmap(pid_t pid, addr_t start, size_t length)
+int call_process_munmap(pid_t pid, addr_t start, size_t length)
 {
     struct user_pt_regs regs;
     uint64_t arg[7] = {0};
