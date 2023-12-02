@@ -24,7 +24,7 @@ struct breakpoint_head
 };
 
 void init_head(pid_t pid, struct breakpoint_head *head_ptr);
-int create_breakpoint(struct breakpoint_head *head_ptr, addr_t address);
+int create_breakpoint(struct breakpoint_head *head_ptr, addr_t address, int arch);
 int delete_breakpoint(struct breakpoint_head *head_ptr, uint8_t num, addr_t address);
 breakpoint_t find_breakpoint(struct breakpoint_head *head_ptr, addr_t address);
 int wait_breakpoint(struct breakpoint_head *head_ptr);

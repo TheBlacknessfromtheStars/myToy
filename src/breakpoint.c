@@ -74,36 +74,34 @@ int get_mm_port(pid_t pid, addr_t address)
 uint32_t get_code(pid_t pid, addr_t address)
 {
     uint32_t code = 0;
-    int old_auth = get_mm_port(pid, address);
 
-    call_process_mprotect(pid, address&(~0xfff), 0x1000, PROT_READ);
-    preadv(pid, address, &code, 4);
-    call_process_mprotect(pid, address&(~0xfff), 0x1000, old_auth);
+    read_mem(pid, address, &code, 4);
 
     return code;
 }
 
 int set_code(pid_t pid, addr_t address, uint32_t code)
 {
-    int old_auth = get_mm_port(pid, address);
     int ret = 1;
 
-    call_process_mprotect(pid, address&(~0xfff), 0x1000, PROT_WRITE);
-    if(pwritev(pid, address, &code, 4) < 0)
+    if(write_mem(pid, address, &code, 4) < 0)
         ret = 0;
-    call_process_mprotect(pid, address&(~0xfff), 0x1000, old_auth);
 
     return ret;
 }
 
-int create_breakpoint(struct breakpoint_head *head_ptr, addr_t address)
+int create_breakpoint(struct breakpoint_head *head_ptr, addr_t address, int arch)
 {
-    uint32_t brk_code = 0xd4200000;
+    uint32_t arm64_brk_code = 0xd4200000;
+    uint32_t arm32_brk_code = 0xe1200070;
     uint32_t old_code;
 
     old_code = get_code(head_ptr->pid, address);
     insert_breakpoint_node(head_ptr, old_code, address);
-    set_code(head_ptr->pid, address, brk_code);
+    if(arch)
+    	set_code(head_ptr->pid, address, arm64_brk_code);
+    else
+	set_code(head_ptr->pid, address, arm32_brk_code);
 
     return 0;
 }

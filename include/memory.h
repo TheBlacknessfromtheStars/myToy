@@ -63,6 +63,8 @@ enum
 
 ssize_t preadv(pid_t pid, addr_t address, void *buf, size_t size);
 ssize_t pwritev(pid_t pid, addr_t address, void *buf, size_t size);
+int read_mem(pid_t pid, addr_t address, void *buf, size_t size);
+int write_mem(pid_t pid, addr_t address, void *buf, size_t size);
 size_t judg_size(int type);
 memInfo_ptr memInfo_alloc_node();
 uint8_t parse_auth(const char *authStr);
